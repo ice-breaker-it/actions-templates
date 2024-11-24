@@ -3,15 +3,16 @@ name: Build and publish docker image
 on:
   workflow_call:
     inputs:
-      ecr:
-        required: true
-        type: secret
       image_name:
         required: true
         type: string
       tag_name:
         required: true
         type: string
+    secrets:
+      ecr:
+        required: true
+        type: secret
       aws_access_key_id:
         required: true
         type: secret
@@ -33,15 +34,15 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          aws-access-key-id: ${{ inputs.aws_access_key_id }}
-          aws-secret-access-key: ${{ inputs.aws_secret_access_key }}
-          aws-region: ${{ inputs.aws_region }}
+          aws-access-key-id: ${{ secrets.aws_access_key_id }}
+          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+          aws-region: ${{ secrets.aws_region }}
 
       - name: Docker login
-        run: aws ecr get-login-password | docker login --password-stdin --username AWS https:// $${{ inputs.ecr }}
+        run: aws ecr get-login-password | docker login --password-stdin --username AWS https://${{ secrets.ecr }}
 
       - name: Docker build and tag
-        run: docker build -t ${{ inputs.ecr }}/${{ inputs.image_name}}@${{ input.tag_name }} .
+        run: docker build -t ${{ secrets.ecr }}/${{ inputs.image_name}}:${{ input.tag_name }} .
 
       - name: Docker push
-        run: docker push ${{ inputs.ecr }}/${{ inputs.image_name}}@${{ input.tag_name }}
+        run: docker push ${{ secrets.ecr }}/${{ inputs.image_name}}:${{ input.tag_name }}

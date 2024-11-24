@@ -7,7 +7,6 @@ inputs:
   tag_name:
     description: 'The tag of the Docker image to be built'
     required: true
-secrets:
   ecr:
     description: 'ECR repository URL'
     required: true

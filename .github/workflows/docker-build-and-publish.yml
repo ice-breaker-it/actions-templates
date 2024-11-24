@@ -1,11 +1,11 @@
-name: Build and Test
+name: Build and publish docker image
 
 on:
   workflow_call:
     inputs:
       ecr:
         required: true
-        type: string
+        type: secret
       image_name:
         required: true
         type: string
@@ -14,13 +14,13 @@ on:
         type: string
       aws_access_key_id:
         required: true
-        type: string
+        type: secret
       aws_secret_access_key:
         required: true
-        type: string
+        type: secret
       aws_region:
         required: true
-        type: string
+        type: secret
 
 jobs:
   build-and-test:
@@ -38,7 +38,7 @@ jobs:
           aws-region: ${{ inputs.aws_region }}
 
       - name: Docker login
-        run: aws ecr get-login-password | docker login --password-stdin --username AWS https://$${{ inputs.ecr }}
+        run: aws ecr get-login-password | docker login --password-stdin --username AWS https:// $${{ inputs.ecr }}
 
       - name: Docker build and tag
         run: docker build -t ${{ inputs.ecr }}/${{ inputs.image_name}}@${{ input.tag_name }} .

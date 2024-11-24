@@ -1,0 +1,68 @@
+name: Create Release on Main Commit
+
+on:
+  workflow_call:
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Fetch all tags
+      - name: Fetch all tags
+        run: git fetch --tags
+
+      # Step 3: Determine the last tag
+      - name: Get last tag
+        id: get_last_tag
+        run: |
+          last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "last_tag=$last_tag" >> $GITHUB_ENV
+          echo "last_tag=$last_tag" # Output for debugging
+
+      # Step 4: Calculate the new tag
+      - name: Calculate new tag
+        id: calculate_tag
+        run: |
+          # Extract the last tag's major, minor, patch
+          IFS='.' read -r major minor patch <<<"${last_tag#v}"
+          
+          # Get the last commit message
+          last_commit_message=$(git log -1 --pretty=%B)
+          
+          # Determine version increment
+          if echo "$last_commit_message" | grep -E ':boom:|:alien:'; then
+            major=$((major + 1))
+            minor=0
+            patch=0
+          elif echo "$last_commit_message" | grep -E ':ambulance:|:bug:|:construction_worker:|:white_check_mark:|:memo:'; then
+            patch=$((patch + 1))
+          else
+            minor=$((minor + 1))
+            patch=0
+          fi
+          
+          # Generate the new tag
+          new_tag="v$major.$minor.$patch"
+          echo "new_tag=$new_tag" >> $GITHUB_ENV
+          echo "new_tag=$new_tag" # Output for debugging
+
+      # Step 5: Create the new tag
+      - name: Create new tag
+        run: |
+          git tag $new_tag
+          git push origin $new_tag
+
+      # Step 6: Create a release
+      - name: Create release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.new_tag }}
+          release_name: ${{ env.new_tag }}
+          body: "Automated release for ${{ env.new_tag }}"
+          draft: false
+          prerelease: false

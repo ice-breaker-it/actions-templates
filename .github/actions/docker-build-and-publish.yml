@@ -1,0 +1,43 @@
+name: 'Build and Publish Docker Image'
+description: 'Builds a Docker image and pushes it to an ECR repository'
+inputs:
+  image_name:
+    description: 'The name of the Docker image to be built'
+    required: true
+  tag_name:
+    description: 'The tag of the Docker image to be built'
+    required: true
+secrets:
+  ecr:
+    description: 'ECR repository URL'
+    required: true
+  aws_access_key_id:
+    description: 'AWS Access Key ID'
+    required: true
+  aws_secret_access_key:
+    description: 'AWS Secret Access Key'
+    required: true
+  aws_region:
+    description: 'AWS Region'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.aws_access_key_id }}
+        aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+        aws-region: ${{ secrets.aws_region }}
+
+    - name: Docker login
+      run: aws ecr get-login-password | docker login --password-stdin --username AWS https://${{ secrets.ecr }}
+
+    - name: Docker build and tag
+      run: docker build -t ${{ secrets.ecr }}/${{ inputs.image_name }}:${{ inputs.tag_name }} .
+
+    - name: Docker push
+      run: docker push ${{ secrets.ecr }}/${{ inputs.image_name }}:${{ inputs.tag_name }}

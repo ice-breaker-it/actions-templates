@@ -12,16 +12,12 @@ on:
     secrets:
       ecr:
         required: true
-        type: secret
       aws_access_key_id:
         required: true
-        type: secret
       aws_secret_access_key:
         required: true
-        type: secret
       aws_region:
         required: true
-        type: secret
 
 jobs:
   build-and-test:

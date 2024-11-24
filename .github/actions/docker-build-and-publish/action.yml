@@ -34,9 +34,12 @@ runs:
 
     - name: Docker login
       run: aws ecr get-login-password | docker login --password-stdin --username AWS https://${{ inputs.ecr }}
+      shell: bash
 
     - name: Docker build and tag
       run: docker build -t ${{ inputs.ecr }}/${{ inputs.image_name }}:${{ inputs.tag_name }} .
+      shell: bash
 
     - name: Docker push
       run: docker push ${{ inputs.ecr }}/${{ inputs.image_name }}:${{ inputs.tag_name }}
+      shell: bash

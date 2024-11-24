@@ -38,7 +38,7 @@ jobs:
         run: aws ecr get-login-password | docker login --password-stdin --username AWS https://${{ secrets.ecr }}
 
       - name: Docker build and tag
-        run: docker build -t ${{ secrets.ecr }}/${{ inputs.image_name}}:${{ input.tag_name }} .
+        run: docker build -t ${{ secrets.ecr }}/${{ inputs.image_name }}:${{ inputs.tag_name }} .
 
       - name: Docker push
-        run: docker push ${{ secrets.ecr }}/${{ inputs.image_name}}:${{ input.tag_name }}
+        run: docker push ${{ secrets.ecr }}/${{ inputs.image_name }}:${{ inputs.tag_name }}

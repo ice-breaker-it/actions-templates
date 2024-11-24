@@ -56,13 +56,3 @@ jobs:
         run: |
           git tag $new_tag
           git push origin $new_tag
-
-      # Step 6: Create a release
-      - name: Create release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ env.new_tag }}
-          release_name: ${{ env.new_tag }}
-          body: "Automated release for ${{ env.new_tag }}"
-          draft: false
-          prerelease: false

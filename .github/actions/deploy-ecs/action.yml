@@ -42,7 +42,7 @@ runs:
     - name: Deploy
       working-directory: ./.github/workflows/cloudformation
       run: |
-        apt-get update && apt-get install -y get-text
+        sudo apt-get update && sudo apt-get install -y get-text
         
         export ENVIRONMENT=${{ inputs.environment }}
         export SERVICE_NAME=${{ inputs.service_name }}

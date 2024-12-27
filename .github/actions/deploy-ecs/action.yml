@@ -47,7 +47,7 @@ runs:
             --stack-name ${{ inputs.service_name }}-stack-${{ inputs.environment }} \
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \
-            $(awk -F= '{printf "%s=\"%s\" ", $1, $2}' environments/${{ inputs.environment }}.env) \
+            flie://environments/${{ inputs.environment }}.yml) \
             ContainerImage=${{ inputs.image }} \
             Environment=${{ inputs.environment }} \
             ServiceName=${{ inputs.service_name }}

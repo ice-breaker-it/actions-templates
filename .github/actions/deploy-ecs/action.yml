@@ -33,14 +33,14 @@ runs:
         aws-region: ${{ inputs.aws_region }}
 
     - name: Validate template
-      working-directory: ./github/workflows/cloudformation
+      working-directory: ./.github/workflows/cloudformation
       run: |
         aws cloudformation validate-template \
           --template-body file://templates/service-stack.yaml
       shell: bash
 
     - name: Deploy
-      working-directory: ./github/workflows/cloudformation
+      working-directory: ./.github/workflows/cloudformation
       run: |
         aws cloudformation deploy \
             --template-file templates/service-stack.yaml \

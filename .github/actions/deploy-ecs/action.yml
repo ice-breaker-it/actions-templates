@@ -1,0 +1,54 @@
+name: 'Deploy to ECS'
+description: 'Deploys to ECS Service'
+inputs:
+  image:
+    description: 'The full image name that will be deployed'
+    required: true
+  environment:
+    description: 'The environment to deploy to'
+    required: true
+  aws_access_key_id:
+    description: 'AWS Access Key ID'
+    required: true
+  aws_secret_access_key:
+    description: 'AWS Secret Access Key'
+    required: true
+  aws_region:
+    description: 'AWS Region'
+    required: true
+  service_name:
+    description: 'Service name'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ inputs.aws_access_key_id }}
+        aws-secret-access-key: ${{ inputs.aws_secret_access_key }}
+        aws-region: ${{ inputs.aws_region }}
+
+    - name: Validate template
+      working-directory: ./github/workflows/cloudformation
+      run: |
+        aws cloudformation validate-template \
+          --template-body file://templates/service-stack.yaml
+      shell: bash
+
+    - name: Deploy
+      working-directory: ./github/workflows/cloudformation
+      run: |
+        aws cloudformation deploy \
+            --template-file templates/service-stack.yaml \
+            --stack-name ${{ inputs.service_name }}-stack-${{ inputs.environment }} \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides \
+            $(cat environments/${{ inputs.environment }}/.env) \
+            ContainerImage=${{ inputs.image }} \
+            Environment=${{ inputs.environment }} \
+            ServiceName=${{ inputs.service_name }}
+      shell: bash

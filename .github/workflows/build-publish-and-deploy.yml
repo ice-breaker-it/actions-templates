@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Docker build and publish
-        uses: ../actions/docker-build-and-publish/action.yml
+        uses: ./actions/docker-build-and-publish/action.yml
         with:
           image_name: ice-breaker/${{ inputs.service_name }}
           tag_name: ${{ inputs.tag_name }}
@@ -41,7 +41,7 @@ jobs:
     environment: test
     steps:
       - name: Deploy to test
-        uses: ../actions/deploy-ecs/action.yml
+        uses: ./actions/deploy-ecs/action.yml
         with:
           image: ${{ secrets.ecr }}/ice-breaker/${{ inputs.service_name }}:${{ inputs.tag_name }}
           service_name: ${{ inputs.tag_name }}

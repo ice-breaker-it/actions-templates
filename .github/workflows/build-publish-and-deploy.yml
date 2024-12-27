@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Docker build and publish
-        uses: ../actions/docker-build-and-publish/action.yml@v1.0.0
+        uses: ../actions/docker-build-and-publish/action.yml
         with:
           image_name: ice-breaker/${{ inputs.service_name }}
           tag_name: ${{ inputs.tag_name }}

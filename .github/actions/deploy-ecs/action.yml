@@ -36,14 +36,14 @@ runs:
       working-directory: ./.github/workflows/cloudformation
       run: |
         aws cloudformation validate-template \
-          --template-body file://templates/service-stack.yaml
+          --template-body file://templates/service-stack.yml
       shell: bash
 
     - name: Deploy
       working-directory: ./.github/workflows/cloudformation
       run: |
         aws cloudformation deploy \
-            --template-file templates/service-stack.yaml \
+            --template-file templates/service-stack.yml \
             --stack-name ${{ inputs.service_name }}-stack-${{ inputs.environment }} \
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \

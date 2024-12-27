@@ -44,7 +44,7 @@ jobs:
         uses: ice-breaker-it/actions-templates/.github/actions/deploy-ecs@main
         with:
           image: ${{ secrets.ecr }}/ice-breaker/${{ inputs.service_name }}:${{ inputs.tag_name }}
-          service_name: ${{ inputs.tag_name }}
+          service_name: users-service
           aws_access_key_id: ${{ secrets.aws_access_key_id }}
           aws_secret_access_key: ${{ secrets.aws_secret_access_key }}
           aws_region: ${{ secrets.aws_region }}

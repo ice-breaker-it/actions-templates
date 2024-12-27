@@ -42,13 +42,13 @@ runs:
     - name: Deploy
       working-directory: ./.github/workflows/cloudformation
       run: |
-        sudo apt-get update && sudo apt-get install -y get-text
-        
         export ENVIRONMENT=${{ inputs.environment }}
         export SERVICE_NAME=${{ inputs.service_name }}
         export CONTAINER_IMAGE=${{ inputs.image }}
         
         cat environments/${{ inputs.environment }}.json | envsubst > env.json
+        echo "Parameters overrides:"
+        cat env.json
         
         aws cloudformation deploy \
             --template-file templates/service-stack.yml \

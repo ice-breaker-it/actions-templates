@@ -36,8 +36,11 @@ runs:
       run: aws ecr get-login-password | docker login --password-stdin --username AWS https://${{ inputs.ecr }}
       shell: bash
 
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
     - name: Docker build and tag
-      run: docker build -t ${{ inputs.ecr }}/${{ inputs.image_name }}:${{ inputs.tag_name }} .
+      run: docker buildx build --platform linux/arm64 -t ${{ inputs.ecr }}/${{ inputs.image_name }}:${{ inputs.tag_name }} --load .
       shell: bash
 
     - name: Docker push

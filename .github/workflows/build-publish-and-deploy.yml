@@ -44,8 +44,7 @@ jobs:
 
       - name: Build and package
         run: |
-          mvn clean install -DskipTests -Dopenapi.generator.skip=true
-          mvn package -DskipTests
+          mvn clean install package -DskipTests
         shell: bash
 
       - name: Docker build and publish
